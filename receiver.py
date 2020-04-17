@@ -82,11 +82,11 @@ class Receiver():
         plt.show()
 
 
-receiver = Receiver([118,32])
-attacker = Attacker([116,30],1)
-airplane = Airplane('782034',[120,30],[115,28],180,0)#1564503340
-time_track =receiver.fin_time_track(airplane)
-time_track2 = receiver.ghost_time_track(attacker.ghost_list[0])
+# receiver = Receiver([118,32])
+# attacker = Attacker([116,30],1)
+# airplane = Airplane('782034',[120,30],[115,28],180,0)#1564503340
+# time_track =receiver.fin_time_track(airplane)
+# time_track2 = receiver.ghost_time_track(attacker.ghost_list[0])
 # # print(track)+
 # plt.plot(track2)
 # plt.show()
@@ -95,8 +95,8 @@ time_track2 = receiver.ghost_time_track(attacker.ghost_list[0])
 
 
 # 测试前后数据包的时间差
-time_error = []
-track = airplane.track
+# time_error = []
+# track = airplane.track
 #
 # for i in range(len(time_track)-1):
 #     time_error.append(time_track[i+1]-time_track[i]-0.5*100000000
