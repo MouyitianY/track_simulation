@@ -37,7 +37,7 @@ class Receiver():
         # last_time = 0
         for position in track:
             # 到达时间 = 上一条消息发出的时间+0.5+漂移+噪音+信号飞行时间
-            time_of_arrive = (last_time+0.5*100000000)+self.drift(200) + self.nosie() + airplane.geodistance(position,self.location)*10/3
+            time_of_arrive = (last_time+0.5*100000000)+self.drift(500) + self.nosie() + airplane.geodistance(position,self.location)*10/3
             # time_of_arrive = self.drift(200) + self.nosie()+ airplane.geodistance(position,self.location)*10/3
             last_time = time_of_arrive - airplane.geodistance(position,self.location)*10/3
             time_track.append(time_of_arrive)
