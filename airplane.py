@@ -82,19 +82,19 @@ class Airplane:
 
             offset_point_set.append(offset_point)
         offset_point_set.append(self.destination)
-        print(offset_point_set)
+        # print(offset_point_set)
 
         # 两两拐点生成直线
         for i in range(len(offset_point_set)-1):
             error = [offset_point_set[i+1][0]-offset_point_set[i][0],
                      offset_point_set[i+1][1]-offset_point_set[i][1],
                      (offset_point_set[i+1][2]-offset_point_set[i][2])//50]
-            print('...........................',error)
+
 
             cost_time = self.geodistance(offset_point_set[i+1], offset_point_set[i])/self.speed
             massage_num = cost_time // 0.5
             massage_num = int(massage_num)
-            print(massage_num)
+            # print(massage_num)
             for j in range(massage_num):
                 position = [offset_point_set[i][0]+error[0]*j/(massage_num),
                             offset_point_set[i][1]+error[1]*j/(massage_num),

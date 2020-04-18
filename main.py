@@ -13,7 +13,7 @@ if __name__ == '__main__':
     lng = []
     lat = []
     for position in track:
-        print(position)
+        # print(position)
         lng.append(position[0])
         lat.append(position[1])
     plt.plot(lng, lat, '.')
