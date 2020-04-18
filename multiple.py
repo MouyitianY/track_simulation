@@ -75,10 +75,10 @@ class Multiple:
         plt.show()
 
 
-m = Multiple(30,10)
-m.match_RA()
-print(m.receiver_list[0])
-m.plt_all()
+# m = Multiple(30,10)
+# m.match_RA()
+# print(m.receiver_list[0])
+# m.plt_all()
 #
 # A = m.plane_list[0]
 # for i in range(10):
