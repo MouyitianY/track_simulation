@@ -1,12 +1,13 @@
 from airplane import Airplane
 from attacker import Attacker
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import random
 
 class Receiver():
     def __init__(self, location):
         '''
-        :param location: [lng,lat] 接收器坐标
+        :param location: [lng,lat,high] 接收器坐标
         '''
         self.location = location
         self.airplane_dic = {}
@@ -59,10 +60,10 @@ class Receiver():
         # last_time = 0
         for position in track:
             # 到达时间 = 上一条消息发出的时间+0.5+漂移+噪音+信号飞行时间
-            time_of_arrive = (last_time + 0.5 * 100000000) + self.drift(200) + self.nosie() + airplane.geodistance(
+            time_of_arrive = (last_time + 0.5 * 100000000) + self.drift(200) + self.nosie() + Airplane.geodistance(
                 ghost.ghost_flag, self.location) * 10 / 3
             # time_of_arrive = self.drift(200) + self.nosie()+ airplane.geodistance(position,self.location)*10/3
-            last_time = time_of_arrive - airplane.geodistance(position, self.location) * 10 / 3
+            last_time = time_of_arrive - Airplane.geodistance(position, self.location) * 10 / 3
             time_track.append(time_of_arrive)
         self.ghost_dic[ghost.icao] = tuple(time_track)
         ghost.time_track = time_track
@@ -71,20 +72,31 @@ class Receiver():
 
     # 绘制接收器与飞机轨迹坐标图
     def plt_location(self,airplane):
+        fig = plt.figure()
+        ax = fig.gca(projection='3d')
+
         track = airplane.gettrack()
         lng = []
         lat = []
+        high = []
         for position in track:
             lng.append(position[0])
             lat.append(position[1])
-        plt.plot(lng,lat,'.')
-        plt.plot(self.location[0], self.location[1],'r.')
+            high.append(position[2])
+        ax.plot(lng, lat, high, 'b.')
+        ax.scatter(self.location[0], self.location[1], self.location[2], 'r.')
+        ax.legend()
         plt.show()
 
 
-# receiver = Receiver([118,32])
-# attacker = Attacker([116,30],1)
-# airplane = Airplane('782034',[120,30],[115,28],180,0)#1564503340
+# receiver = Receiver([118,32,1000])
+# attacker = Attacker([116,30,1000],1)
+# airplane = Airplane('782034', [120, 30, 8500], [115, 28, 7500], 180, 0)#1564503340
+
+# receiver.fin_time_track(airplane)
+# print(receiver.airplane_dic["782034"])
+# receiver.plt_location(airplane)
+
 # time_track =receiver.fin_time_track(airplane)
 # time_track2 = receiver.ghost_time_track(attacker.ghost_list[0])
 # # print(track)+

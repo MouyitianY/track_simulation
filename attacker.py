@@ -21,8 +21,8 @@ class Attacker:
         for i in range(ghost_num):
             # 随机生成icao、start、end、speed、starttime
             icao = random.randint(700000, 799999)
-            start = [self.loaction[0] + random.uniform(-3, 3), self.loaction[1] + random.uniform(-3, 3)]
-            end = [self.loaction[0] + random.uniform(-3, 3), self.loaction[1] + random.uniform(-3, 3)]
+            start = [self.loaction[0] + random.uniform(-3, 3), self.loaction[1] + random.uniform(-3, 3), 5000+random.randint(-10,10)*50]
+            end = [self.loaction[0] + random.uniform(-3, 3), self.loaction[1] + random.uniform(-3, 3), 5000+random.randint(-10,10)*50]
             speed = random.randint(150, 300)
             starttime = random.randint(1000, 16000)
             # 根据随机数据生成飞机

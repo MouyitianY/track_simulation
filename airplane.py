@@ -61,14 +61,20 @@ class Airplane:
     # 获取航线轨迹坐标列表 [[lng,lat]...]
     def gettrack(self):
         track = []
-        # 随机生成拐点数量
-        point_num = random.randint(15,35)
+        # 起点和终点的差值
+        error = [self.destination[0] - self.start[0], self.destination[1] - self.start[1]]
+        # 根据经纬度范围随机生成拐点数量
+
+        point_num = random.randint(min(abs(error[0]*3),abs(error[1])*3),max(abs(error[0]*3),abs(error[1])*3))
+        # print(point_num)
         offset_point_set = [self.start]
 
-        error = [self.destination[0] - self.start[0], self.destination[1] - self.start[1]]
 
+
+        # 生成【0，1】之间的随机序列
         rand_set = [0,1]
-        for i in range(point_num):
+        for i in range(int(point_num)):
+
             rand_set.append(random.random())
         rand_set.sort()
 
@@ -77,7 +83,7 @@ class Airplane:
 
             offset_point = [self.start[0]+error[0]*(rand_set[i+1]+(rand_set[i+2]-rand_set[i+1])*random.uniform(-1,1)),
                             self.start[1]+error[1]*rand_set[i+1],
-                            offset_point_set[i][2]+random.randint(1,20)*100]
+                            offset_point_set[i][2]+random.randint(-10,10)*100]
             # 拐点=直线点+误差
 
             offset_point_set.append(offset_point)

@@ -8,19 +8,11 @@ if __name__ == '__main__':
     #一架飞机
     airplane = Airplane('782034', [120, 30, 8500], [115, 28, 7500], 180, 0)
 
-    track = airplane.track
-
-    lng = []
-    lat = []
-    for position in track:
-        # print(position)
-        lng.append(position[0])
-        lat.append(position[1])
-    plt.plot(lng, lat, '.')
-    plt.show()
-
-    # # 一个接收器
-    # receiver = Receiver([118, 32])
+    # 一个接收器
+    receiver = Receiver([118, 32, 1000])
+    receiver.fin_time_track(airplane)
+    print(receiver.airplane_dic["782034"])
+    receiver.plt_location(airplane)
     #
     # # 一个位置固定的攻击者
     # attacker = Attacker([116, 30], 1)
