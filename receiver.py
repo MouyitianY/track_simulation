@@ -33,7 +33,7 @@ class Receiver():
         :return:
         '''
         time_track=[]
-        track = airplane.gettrack()
+        track = airplane.track
         last_time = airplane.starttime*1000000000
         # last_time = 0
         for position in track:
