@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     #一架飞机
-    airplane = Airplane('782034', [120, 30, 8500], [115, 28, 7500], 180, 0)
+    airplane = Airplane('782034', [120.1549, 30, 8500], [115, 28.15455, 7500], 180, 0)
 
     # 一个接收器
     receiver = Receiver([118, 32, 1000])

@@ -63,9 +63,9 @@ class Airplane:
         track = []
         # 起点和终点的差值
         error = [self.destination[0] - self.start[0], self.destination[1] - self.start[1]]
-        # 根据经纬度范围随机生成拐点数量
 
-        point_num = random.randint(min(abs(error[0]*3),abs(error[1])*3),max(abs(error[0]*3),abs(error[1])*3))
+        # 根据经纬度范围随机生成拐点数量
+        point_num = random.randint(min(abs(int(error[0])*3),abs(int(error[1]))*3),max(abs(int(error[0])*3),abs(int(error[1]))*3))
         # print(point_num)
         offset_point_set = [self.start]
 
