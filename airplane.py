@@ -65,8 +65,9 @@ class Airplane:
         error = [self.destination[0] - self.start[0], self.destination[1] - self.start[1]]
 
         # 根据经纬度范围随机生成拐点数量
-        # point_num = random.randint(min(abs(int(error[0])*3),abs(int(error[1]))*3),max(abs(int(error[0])*3),abs(int(error[1]))*3))
-        point_num = random.randint(10,20)
+        # point_num = 0
+        point_num = random.randint(min(abs(int(error[0])*3),abs(int(error[1]))*3),max(abs(int(error[0])*3),abs(int(error[1]))*3))
+        # point_num = random.randint(10,20)
         # print(point_num)
         offset_point_set = [self.start]
 
@@ -75,7 +76,6 @@ class Airplane:
         # 生成【0，1】之间的随机序列
         rand_set = [0,1]
         for i in range(int(point_num)):
-
             rand_set.append(random.random())
         rand_set.sort()
 
