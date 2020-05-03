@@ -1,5 +1,7 @@
 from math import radians, cos, sin, asin, sqrt, pi, atan, pow
 import random
+from NT_insert import NT,calF
+from scipy.interpolate import  Akima1DInterpolator
 
 class Airplane:
     def __init__(self, icao, start, destination, speed, starttime):
@@ -97,6 +99,57 @@ class Airplane:
                      offset_point_set[i+1][1]-offset_point_set[i][1],
                      (offset_point_set[i+1][2]-offset_point_set[i][2])//50]
 
+
+            cost_time = self.geodistance(offset_point_set[i+1], offset_point_set[i])/self.speed
+            massage_num = cost_time // 0.5
+            massage_num = int(massage_num)
+            # print(massage_num)
+            for j in range(massage_num):
+                position = [offset_point_set[i][0]+error[0]*j/(massage_num),
+                            offset_point_set[i][1]+error[1]*j/(massage_num),
+                            offset_point_set[i][2]+(error[2]*(j/(massage_num)))//1*50]
+                track.append(position)
+        return track
+
+
+    # 插值法获得轨迹
+    def gettrack_insert(self):
+        track = []
+        # 起点和终点的差值
+        error = [self.destination[0] - self.start[0], self.destination[1] - self.start[1]]
+
+        # 根据经纬度范围随机生成拐点数量
+        # point_num = 0
+        point_num = random.randint(min(abs(int(error[0])*3),abs(int(error[1]))*3),max(abs(int(error[0])*3),abs(int(error[1]))*3))
+        if point_num <= 0:
+            point_num = 1
+        # point_num = random.randint(10,20)
+        # print(point_num)
+        offset_point_set = [self.start]
+
+        # 生成[0，1]之间的随机序列
+        rand_set = [0,1]
+        for i in range(int(point_num)):
+            rand_set.append(random.random())
+        rand_set.sort()
+
+        # 生成拐点
+        for i in range(point_num):
+
+            offset_point = [self.start[0]+error[0]*(rand_set[i+1]+(rand_set[i+2]-rand_set[i+1])*random.uniform(-1,1)),
+                            self.start[1]+error[1]*rand_set[i+1],
+                            offset_point_set[i][2]+random.randint(-10,10)*100]
+            # 拐点=直线点+误差
+
+            offset_point_set.append(offset_point)
+        offset_point_set.append(self.destination)
+        # print(offset_point_set)
+
+        # 三个拐点生成曲线
+        for i in range(len(offset_point_set)-2):
+            error = [offset_point_set[i+1][0]-offset_point_set[i][0],
+                     offset_point_set[i+1][1]-offset_point_set[i][1],
+                     (offset_point_set[i+1][2]-offset_point_set[i][2])//50]
 
             cost_time = self.geodistance(offset_point_set[i+1], offset_point_set[i])/self.speed
             massage_num = cost_time // 0.5
