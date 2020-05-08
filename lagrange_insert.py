@@ -29,6 +29,19 @@ def plot(data,nums):
     plt.savefig('Lg.jpg')
     plt.show()
 
-data=[[0,0],[1,2],[2,4],[3,8],[4,32]]
-print (Lg(data,1.5))
-plot(data,100)
+def insert(data,nums):
+    data_x=[data[i][0] for i in range(len(data))]
+    data_y=[data[i][1] for i in range(len(data))]
+    Area=[min(data_x),max(data_x)]
+    X=[Area[0]+1.0*i*(Area[1]-Area[0])/nums for i in range(nums)]
+    X[len(X)-1]=Area[1]
+    Y=[Lg(data,x) for x in X]
+    track = []
+    for i in range(nums):
+        track.append([X[i], Y[i], 10000])
+    return track
+
+
+# data=[[0,0],[1,2],[2,4],[3,8],[4,32]]
+# print (Lg(data,1.5))
+# plot(data,100)

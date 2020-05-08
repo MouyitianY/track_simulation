@@ -11,8 +11,9 @@ if __name__ == '__main__':
     # 一个接收器
     receiver = Receiver([118, 32, 1000])
     receiver.fin_time_track(airplane)
-    print(receiver.airplane_dic["782034"])
+    # print(receiver.airplane_dic["782034"])
     receiver.plt_location(airplane)
+
     #
     # # 一个位置固定的攻击者
     # attacker = Attacker([116, 30], 1)

@@ -75,7 +75,7 @@ class Receiver():
         fig = plt.figure()
         ax = fig.gca(projection='3d')
 
-        track = airplane.gettrack()
+        track = airplane.track
         lng = []
         lat = []
         high = []

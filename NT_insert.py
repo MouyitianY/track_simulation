@@ -51,6 +51,23 @@ def plot(data,nums):
     # plt.savefig('Newton.jpg')
     plt.show()
 
-# data=[[2,3],[3,8],[4,10]]
+def insert(data,nums):
+    print(data)
+    data_x=[data[i][0] for i in range(len(data))]
+    data_y=[data[i][1] for i in range(len(data))]
+    Area=[min(data_x),max(data_x)]
+    X=[Area[0]+1.0*i*(Area[1]-Area[0])/nums for i in range(nums)]
+    X[len(X)-1]=Area[1]
+    print(X)
+    F=calF(data)
+    Y=[NT(data,x,F) for x in X]
+    print(Y)
+    track = []
+    for i in range(nums):
+        track.append([X[i], Y[i], 10000])
+    return track
+
+
+# data=[[4,3,4],[3,8],[2,10]]
 #
 # plot(data,100)
