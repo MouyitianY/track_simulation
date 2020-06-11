@@ -1,57 +1,68 @@
-# 模拟数据获取
-from airplane import Airplane
-from receiver import Receiver
-import matplotlib.pyplot as plt
-import numpy as np
-from math import radians, cos, sin, asin, sqrt, pi, atan
+# import torch
+# import torch.nn as nn
+#
+#
+# hidden_size = 10
+# a = torch.rand(50,2)
+# hidden = ( torch.zeros(2, 1, hidden_size), torch.zeros(2, 1, hidden_size))
+# print(hidden[0].size())
+# # print(a.view((50,1,-1)))
+#
+# lstm = nn.LSTM(2,hidden_size=hidden_size,num_layers=2)
+# # print(lstm.all_weights)
+# linear = nn.Linear(hidden_size, 1)
+#
+# lstm_out, hidden = lstm(a.view(len(a), 1, -1), hidden)
+# pred= linear(lstm_out.view(len(a), -1))
+#
+# print(lstm_out.size())
+# # print(hidden)
+# print(pred.size())
 
-airplane1 = Airplane('782034',[120.128234,30.2141348,10000],[115.86143245,28.750012,10000],180,3340)
-receiver1 = Receiver([114.122588,36.548925,1000])
-time_track1 =receiver1.fin_time_track(airplane1)
-track1 = airplane1.track
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
 
-# 预处理step1
-# 获取前后数据包时间差
+torch.manual_seed(1)
 
+lstm = nn.LSTM(3, 3)  # 输入单词用一个维度为3的向量表示, 隐藏层的一个维度3，仅有一层的神经元，
+#记住就是神经元，这个时候神经层的详细结构还没确定，仅仅是说这个网络可以接受[seq_len,batch_size,3]的数据输入
+# print(lstm.all_weights)
 
-using_data = time_track1
-time_error = []
-location_error = []
-print(len(track1), len(using_data))
+inputs = [torch.randn(1, 3) for _ in range(10)]
+ # 构造一个由5个单单词组成的句子 构造出来的形状是 [5,1,3]也就是明确告诉网络结构我一个句子由5个单词组成，
+#每个单词由一个1X3的向量组成，就是这个样子[1,2,3]
+#同时确定了网络结构，每个批次只输入一个句子，其中第二维的batch_size很容易迷惑人
+#对整个这层来说，是一个批次输入多少个句子，具体但每个神经元，就是一次性喂给神经元多少个单词。
+print('Inputs:',inputs)
 
-for i in range(len(using_data) - 1):
-    time_error.append(using_data[i + 1] - using_data[
-        i] - 50000000)  # -(airplane1.geodistance(track1[i+1],receiver1.location)-airplane1.geodistance(track1[i],receiver1.location))*10/3)
-    location_error.append(
-        (airplane1.geodistance(track1[i + 1], receiver1.location) - airplane1.geodistance(track1[i], receiver1.location))*10/3 + 600)
+# 初始化隐藏状态
+hidden = (torch.randn(1, 1, 3),
+          torch.randn(1, 1, 3))
+print('Hidden:',hidden)
+for i in inputs:
+    # print(i.view(1, 1, -1))
+ # 将序列的元素逐个输入到LSTM，这里的View是把输入放到第三维，看起来有点古怪，
+#回头看看上面的关于LSTM输入的描述，这是固定的格式，以后无论你什么形式的数据，
+#都必须放到这个维度。就是在原Tensor的基础之上增加一个序列维和MiniBatch维，
+#这里可能还会有迷惑，前面的1是什么意思啊，就是一次把这个输入处理完，
+#在输入的过程中不会输出中间结果，这里注意输入的数据的形状一定要和LSTM定义的输入形状一致。
+    # 经过每步操作,hidden 的值包含了隐藏状态的信息
+    out, hidden = lstm(i.view(1, 1, -1), hidden)
+    # print('out1:',out)
+    # print('hidden2:',hidden)
+# 另外, 我们还可以一次对整个序列进行训练. LSTM 返回的第一个值表示所有时刻的隐状态值,
+# 第二个值表示最近的隐状态值 (因此下面的 "out"的最后一个值和 "hidden" 的值是一样的).
+# 之所以这样设计, 是为了通过 "out" 的值来获取所有的隐状态值, 而用 "hidden" 的值来
+# 进行序列的反向传播运算, 具体方式就是将它作为参数传入后面的 LSTM 网络.
 
-# plt.plot(using_data[19:79], test_data[19:79])
-# plt.plot(using_data[:-1], time_error)
-# plt.show()
-# plt.ylim(0.39,0.6)
-# plt.xlim(0.39,0.6)
-# plt.plot(using_data[:-1], location_error)
-# plt.show()
-
-# 初试的估计导弹的位置就直接用GPS测量的位置
-predicts = [time_error[0]]
-position_predict = predicts[0]
-
-predict_var = 0
-odo_var = 50 ** 2  # 这是我们自己设定的位置测量仪器的方差，越大则测量值占比越低
-v_std = 10  # 测量仪器的方差
-for i in range(1, len(using_data[:-1])):
-    dv = (time_error[i] - time_error[i - 1]) + np.random.normal(0, 50)  # 模拟从IMU读取出的速度
-    position_predict = position_predict + dv  # 利用上个时刻的位置和速度预测当前位置
-    predict_var += v_std ** 2  # 更新预测数据的方差
-    # 下面是Kalman滤波
-    position_predict = position_predict * odo_var / (predict_var + odo_var) + time_error[i] * predict_var / (
-                predict_var + odo_var)
-    predict_var = (predict_var * odo_var) / (predict_var + odo_var) ** 2
-    predicts.append(position_predict)
-plt.plot(using_data[:-1], time_error)
-
-plt.plot(using_data[:-1], predicts, label='kalman filtered position')
-plt.plot(using_data[:-1], location_error)
-plt.legend()
-plt.show()
+# 增加额外的第二个维度
+inputs = torch.cat(inputs).view(5, 2, -1)
+hidden = (torch.randn(1, 2, 3), torch.randn(1, 2, 3))  # clean out hidden state
+print(inputs.size())
+out, hidden = lstm(inputs, hidden)
+print('out2',out.size())
+print('out2',out)
+print('hidden3',hidden[0].size())
+print('hidden3',hidden)

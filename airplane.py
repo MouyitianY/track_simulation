@@ -5,7 +5,7 @@ from scipy.interpolate import  Akima1DInterpolator
 import matplotlib.pyplot as plt
 
 class Airplane:
-    def __init__(self, icao, start, destination, speed, starttime):
+    def __init__(self, icao, start, destination, speed, starttime, ErrorRange=(0.4,0.6)):
         '''
         :param icao:'AAAAAA'飞机标识号
         :param start: [lng,lat，high]起点
@@ -18,11 +18,10 @@ class Airplane:
         self.destination = destination
         self.speed = speed
         self.starttime = starttime
-        # self.distance = self.geodistance(start,destination)
-        self.angle = self.azimuthAngle(start,destination)
-        # self.alltime = self.distance/self.speed
-        self.time_track = [] #在接收器端执行对应的函数后产生（）
+        # self.angle = self.azimuthAngle(start,destination)
+        self.time_track = []#在接收器端执行对应的函数后产生（）
         self.track = self.gettrack_insert()
+        self.send_time_set = self.get_send_time_set(ErrorRange=ErrorRange) # 发送时间集合
 
 
 
@@ -42,7 +41,7 @@ class Airplane:
     # 计算方向角
     def azimuthAngle(self, start, destination):
         x1, y1, x2, y2 = start[0], start[1], destination[0], destination[1]
-        angle = 0.0;
+        angle = 0.0
         dx = x2 - x1
         dy = y2 - y1
         if x2 == x1:
@@ -120,7 +119,7 @@ class Airplane:
         error = [self.destination[0] - self.start[0], self.destination[1] - self.start[1]]
 
         # 根据经纬度范围随机生成拐点数量
-        point_num = random.randint(min(abs(int(error[0])*2),abs(int(error[1]))*2),max(abs(int(error[0])*2),abs(int(error[1]))*2))
+        point_num = random.randint(min(abs(int(error[0])*1),abs(int(error[1]))*1),max(abs(int(error[0])*1),abs(int(error[1]))*1))
         if point_num <= 0:
             point_num = 1
         # point_num = random.randint(10,20)
@@ -207,10 +206,21 @@ class Airplane:
         '''
         self.ghost_flag = ghost_flag
 
+    def get_send_time_set(self, ErrorRange = (0.4,0.6)):
+        send_time_set = []
+        msg_num = len(self.track)
+        last_time = self.starttime
+        for i in range(msg_num):
+            send_time_set.append(last_time)
+            last_time += random.uniform(ErrorRange[0],ErrorRange[1])
+
+        return send_time_set
+
 
 
 
 # airplane = Airplane('782034', [120.1549, 30, 8500], [115, 28.15455, 7500], 180, 0)
+# print(airplane.send_time_set)
 # x=[]
 # y =[]
 # for i in airplane.track:
